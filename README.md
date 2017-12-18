@@ -1,4 +1,5 @@
-[![license](https://img.shields.io/badge/license-GNU%20GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.txt)
+
+[![License](https://img.shields.io/badge/license-GNU%20GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.txt)
 
 # Generate enhancer probes for MPRA experiments
 
