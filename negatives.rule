@@ -1,0 +1,82 @@
+###########################
+# create negative dataset
+# get regions
+###########################
+def getNarrowPeakSamplesByGroup(wc):
+    groupIDs=getGroupIDs(wc.db, wc.group)
+    return expand("data/{db}/imputedNarrowPeak/{id}.bed.gz",
+                    db=wc.db, id=groupIDs)
+def getNarrowPeakSamplesByGroupIDx(wc):
+    groupIDs=getGroupIDs(wc.db, wc.group)
+    return expand("data/{db}/imputedNarrowPeak/{id}.bed.gz.tbi",
+                    db=wc.db, id=groupIDs)
+def getNarrowPeakSamplesNotByGroup(wc):
+    groupIDs=getIDsExceptOfGroup(wc.db, wc.group)
+    return expand("data/{db}/imputedNarrowPeak/{id}.bed.gz",
+                    db=wc.db, id=groupIDs)
+def getNarrowPeakSamplesNotByGroupIDx(wc):
+    groupIDs=getIDsExceptOfGroup(wc.db, wc.group)
+    return expand("data/{db}/imputedNarrowPeak/{id}.bed.gz.tbi",
+                    db=wc.db, id=groupIDs)
+def getGroupIDs(db, group):
+    groups = parseMetadata(db)
+    return groups.get(group, [])
+
+def getIDsExceptOfGroup(db, group):
+    groups = parseMetadata(db)
+    result = []
+    for key, value in groups.items():
+        if (key != group):
+            result += value
+    return result
+
+def parseMetadata(db):
+    result = {}
+    with open("data/%s/EID_metadata.tab" % db, "rt") as fin:
+        next(fin)
+        for line in fin:
+            line_split = line.split("\t")
+            id = line_split[0]
+            id_group = line_split[1].replace(" ", "").replace("&", "")
+            if (id in config['data'][db]['samples']):
+                result[id_group] = result.get(id_group,[]) + [id]
+    return result
+
+# count strictly how many regions overlap. We can use this as threshold for the minimum samples reqzuired the same hit
+rule intersectPeakCallsByGroup:
+    input:
+        bedGroup=getNarrowPeakSamplesByGroup,
+        idxGroup=getNarrowPeakSamplesByGroupIDx,
+        bedNotGroup=getNarrowPeakSamplesNotByGroup,
+        idxNotGroup=getNarrowPeakSamplesNotByGroupIDx,
+        description="data/{db}/EID_metadata.tab"
+    output:
+        intersect="results/{db}/negatives/intersect.{group}.groupOverlap_{overlap}.bed.gz",
+        tmp=temp("results/{db}/negatives/intersect.{group}.groupOverlap_{overlap}.tmp.bed.gz"),
+        idx="results/{db}/negatives/intersect.{group}.groupOverlap_{overlap}.bed.gz.tbi"
+    params:
+        overlap="{overlap}"
+    shell:
+        """
+        bedtools intersect -c -f {params.overlap} -r -a {input.bedGroup[0]} -b {input.bedGroup} | bgzip -c >  {output.tmp};
+        bedtools intersect -c -f {params.overlap} -r -a {output.tmp} -b {input.bedNotGroup} | bgzip -c > {output.intersect};
+        tabix {output.intersect};
+        """
+
+# filter down regions using a threshold of minimum occurences
+rule filterIntersectionCountsNegatives:
+    input:
+        intersect="results/{db}/negatives/intersect.{group}.groupOverlap_{overlap}.bed.gz",
+        idx="results/{db}/negatives/intersect.{group}.groupOverlap_{overlap}.bed.gz.tbi"
+    output:
+        filtered="results/{db}/negatives/filter/samples/{group}.minsamplesWithinGroup_{minsamples}.maxOther_{other}.groupOverlap_{overlap}.bed.gz",
+        idx="results/{db}/negatives/filter/samples/{group}.minsamplesWithinGroup_{minsamples}.maxOther_{other}.groupOverlap_{overlap}.bed.gz.tbi"
+    params:
+        minsamplesWithinGroup="{minsamples}",
+        maxsamplesToOther="{other}"
+    shell:
+        """
+        zcat {input.intersect} | awk '{{if ($5 >= {params.minsamplesWithinGroup} && $6 <= {params.maxsamplesToOther}) print $0}}' | \
+        bgzip -c > {output.filtered};
+        tabix {output.filtered};
+        """

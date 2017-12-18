@@ -1,0 +1,47 @@
+
+###########################
+# create positive dataset
+# get regions
+###########################
+def geNarrowPeakSamples(wc):
+    return expand("data/{db}/imputedNarrowPeak/{id}.bed.gz",
+                    db=wc.db, id=config['data'][wc.db]['samples'])
+def getNarrowPeakSampledIdx(wc):
+    return expand("data/{db}/imputedNarrowPeak/{id}.bed.gz.tbi",
+                    db=wc.db, id=config['data'][wc.db]['samples'])
+
+# count strictly how many regions overlap. We can use this as threshold for the minimum samples reqzuired the same hit
+rule intersectPeakCalls:
+    input:
+        bed=geNarrowPeakSamples,
+        idx=getNarrowPeakSampledIdx
+    output:
+        intersect="results/{db}/positives/intersect.overlap_{overlap}.bed.gz",
+        idx="results/{db}/positives/intersect.overlap_{overlap}.bed.gz.tbi"
+    params:
+        overlap="{overlap}"
+    shell:
+        """
+        bedtools intersect -c -f {params.overlap} -r -a {input.bed[0]} -b {input.bed} | bgzip -c > {output.intersect};
+        tabix {output.intersect};
+        """
+###########################
+# create positive dataset
+# filter regions on sample
+###########################
+
+# filter down regions using a threshold of minimum occurences
+rule filterIntersectionCounts:
+    input:
+        intersect="results/{db}/positives/intersect.overlap_{overlap}.bed.gz",
+        idx="results/{db}/positives/intersect.overlap_{overlap}.bed.gz.tbi"
+    output:
+        filtered="results/{db}/positives/filter/samples/minSamples_{minsamples}.overlap_{overlap}.bed.gz",
+        idx="results/{db}/positives/filter/samples/minSamples_{minsamples}.overlap_{overlap}.bed.gz.tbi"
+    params:
+        threshhold="{minsamples}"
+    shell:
+        """
+        zcat {input.intersect} | awk '{{if ($5 >= {params.threshhold}) print $0}}' | bgzip -c > {output.filtered};
+        tabix {output.filtered};
+        """

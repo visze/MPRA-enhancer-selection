@@ -1,0 +1,15 @@
+name: dnase
+channels:
+- bioconda
+- conda-forge
+- defaults
+- r
+dependencies:
+- bedtools=2.27.1
+- htslib=1.6
+- snakemake=4.3.1
+- wget=1.18
+- bedops=2.4.30
+- ucsc-bigwigtowig=357
+- pysam=0.13.0
+- pyfaidx=0.5.1

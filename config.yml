@@ -1,0 +1,30 @@
+data:
+  RoadMap:
+    samples: ['E001', 'E002', 'E003', 'E004', 'E005', 'E006', 'E007', 'E008', 'E009', 'E010', 'E011', 'E012', 'E013', 'E014', 'E015', 'E016', 'E017', 'E018', 'E019', 'E020', 'E021', 'E022', 'E023', 'E024', 'E025', 'E026', 'E027', 'E028', 'E029', 'E030', 'E031', 'E032', 'E033', 'E034', 'E035', 'E036', 'E037', 'E038', 'E039', 'E040', 'E041', 'E042', 'E043', 'E044', 'E045', 'E046', 'E047', 'E048', 'E049',
+                'E050', 'E051', 'E052', 'E053', 'E054', 'E055', 'E056', 'E057', 'E058', 'E059', 'E061', 'E062', 'E063', 'E065', 'E066', 'E067', 'E068', 'E069', 'E070', 'E071', 'E072', 'E073', 'E074', 'E075', 'E076', 'E077', 'E078', 'E079', 'E080', 'E081', 'E082', 'E083', 'E084', 'E085', 'E086', 'E087', 'E088', 'E089', 'E090', 'E091', 'E092', 'E093', 'E094', 'E095', 'E096', 'E097', 'E098', 'E099', 'E100',
+                'E101', 'E102', 'E103', 'E104', 'E105', 'E106', 'E107', 'E108', 'E109', 'E110', 'E111', 'E112', 'E113', 'E114', 'E115', 'E116', 'E117', 'E118', 'E119', 'E120', 'E121', 'E122', 'E123', 'E124', 'E125', 'E126', 'E127', 'E128', 'E129']
+    # Negative groups where we should have inclusive enhancres
+    # important remove whitespaces AND &
+    negative_groups: ["BloodT-cell", "Brain"]
+params:
+  positives:
+    # -c parameter for bedtools to define the min. overlap ov two regions (1.0 is 100% A in B and B in A => A == B)
+    overlap: [1.0, 0.95, 0.9, 0.8]
+    # From the overlap the number of samples that have that regions are count. Here we set a thershold for a min. number of samples to use the
+    minsamples: [100,110,120]
+  negatives:
+    # -c parameter for bedtools to define the min. overlap ov two regions (1.0 is 100% A in B and B in A => A == B)
+    overlap: [1.0, 0.95, 0.9]
+    # From the overlap the number of samples that have that regions are count. Here we set a thershold for a min. number of samples to use the
+    minsamplesWithinGroup: [14,10,8]
+    # From the overlap the number of samples that have that regions are count. Here we set a thershold for a min. number of samples to use the
+    maxsamplesToOther: [0,5,10]
+  ##
+  transcript_DBs: ['ensembl_75','gencode_27']
+  # minimum distance to TSS (in kb)
+  minDistanceToTSS: [2.0]
+  # final length of the probe. DNA sequence will be extracted from the reference_genome file
+  probe_length: 171
+files:
+  # path to the reference genome that should be used to extract the DNA of the probe_length (must be indexed!)
+  reference_genome: "/fast/projects/cubit/current/static_data/reference/hg19/ucsc/hg19.fa"
