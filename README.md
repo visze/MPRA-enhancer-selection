@@ -35,7 +35,10 @@ Here we will select regions of open DNase accessibility that are only active in 
 You need git installed for this! Use your terminal and move to a folder where you want to checkout the pipeline. Then run:
 
 ```
-git clone https://github.com/visze/mpra_enhancer_selection.git
+# clone from github
+git clone https://github.com/visze/MPRA-enhancer-selection.git
+# enter the project
+cd MPRA-enhancer-selection
 ```
 
 ### Create a conda environment
@@ -44,7 +47,7 @@ Miniconda3 must be installed before. Then use a terminal and run the following c
 
 ```
 # Install dependencies and programs into isolated environment
-conda env create --file environment.yaml
+conda env create --file environment.yml
 
 # activate environment
 source activate dnase
