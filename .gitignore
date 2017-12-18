@@ -1,0 +1,8 @@
+
+.snakemake
+
+results
+
+data/RoadMap/imputedNarrowPeak
+data/RoadMap/imputedSignal
+data/transcript_dbs
