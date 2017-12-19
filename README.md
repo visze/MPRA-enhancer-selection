@@ -3,11 +3,11 @@
 
 # Generate enhancer probes for MPRA experiments
 
-This folder contains a pipeline to select positive and negative enhancer regions using DNase seq from the epigenetic roadmap.
+This folder contains a pipeline to select positive and negative enhancer regions using DNase seq from the Epigenetic RoadMap.
 
 An "enhancer" is defined as an open DNase accessibility which is active in several samples and is not located in front of a transcription start site.
 
-Some stats about the samples in the peigenetic rodmap:
+Some stats about the samples in the Epigenetic RoadMap:
 
 - Number of samples: 127
 - Number of Tissue Groups: 19
@@ -21,63 +21,63 @@ Some stats about the samples in the peigenetic rodmap:
 
 ## Pipeline description
 
-The first part of the probe generation is split up in "positive" and "negative" groups. But in general there are steps:
+The first part of the probe generation is to split up regions into "positive" and "negative" groups. But in general there are these steps:
 
 1. Find common narrow peaks and filter them
-2. Remove regions that are close to a  transcription start site (promoter removal)
+2. Remove regions that are close to a transcription start site (promoter removal)
 3. Get the center of the peaks by maximum signals
 4. Create probes using the new center and the probe length
 
-The first part is slightly different between the positive enhancers (active in lot's of samples) and negative enhancers (active only in a tissue group)
+The first part is slightly different between the positive enhancers (active in lots of samples) and negative enhancers (active only in one specific tissue group)
 
 ### 1.A Positive enhancers
 
-Here we will select regions that are always active over all samples. On any MPRA experiment with any tiisue or cell-line this region should be "activate".
+Here we will select regions that are always active over all samples. On any MPRA experiment with any tissue or cell-line this region should be "active".
 
-1. Running `bedtools intersect` with parameters `-c` `-r` and `-f`. One random sample will be selected as `-a` input. All samples (including `-a`) used as `-b` input. `bedtools` will count the overlaps of the all samples(`b`) with the regions in `a`. `-f` is the minimum fraction of the overlap (e.g. 1.0, 0.9,..). because of `-r` the overlaps must hold for both direction. Region in `a` in regions in `b` and vice versa.
+1. Running `bedtools intersect` with parameters `-c` `-r` and `-f`. One random sample will be selected as `-a` input. All samples (including `-a`) used as `-b` input. `bedtools` will count the overlaps of the all samples(`b`) with the regions in `a`. `-f` is the minimum fraction of the overlap (e.g. 1.0, 0.9,..). because of `-r` the overlap must hold for both directions. Region in `a` in regions in `b` and vice versa.
 2. Filtering the data using a threshold for the minimum number of samples that have the regions. In total there are 127 samples. So with a threshold of 110 the DNase narrow peak is present in 86% of all samples.
 
 The next steps are in common with the negative enhancers.
 
 ### 1.B Negative enhancers
 
-Here we will select regions of open DNase accessibility that are only active in one tissue (e.g. blood) but not in any  other tissue. On a MPRA experiment with a different tissue this region should be deactivated.
+Here we will select regions of DNase accessibility that are only active in one tissue (e.g. blood) but not in any other tissue. On a MPRA experiment with a different tissue this region should be deactivated.
 
 1. First we select a tissue group line `Brain`.
-2. Then we run the "counting" on that group. This is again done with `bedtools intersect` (see 1.A Positive enhancers). One random sample of the group will be selected as `-a` input. All samples of the same group (including `-a`) used as `-b` input.
+2. Then we run the "counting" on that group. Again this is done with `bedtools intersect` (see 1.A Positive enhancers). One random sample of the group will be selected as `-a` input. All samples of the same group (including `-a`) used as `-b` input.
 3. Now we do the same analysis but we will change the `-b` samples to all samples that are not in the selected group (e.g. are not brain).
 4. Filtering the data.
-    1. First we have a threshold for the minimum number of active regions within the group. E.g. if we select as group `Brain` and set the threshold to `8`the 80% of all Brain samples should have this region actives.
-    2. Because we want to have that region exclusive active in the tissue group we filter on teh second analysis with a maximum threshold. E.g. a threshold of 10 for the Brain group means that teh active region Brain region is only active in 10 or less other samples. This is only around 8.5% (10 brain samples, 117 other samples).
+    1. First we have a threshold for the minimum number of active regions within the group. E.g. if we select as group `Brain` and set the threshold to `8`, 80% of all Brain samples should have this region called.
+    2. Because we want to have that region exclusive active in the tissue group we filter on the second analysis with a maximum threshold. E.g. a threshold of 10 for the Brain group means that the active Brain region is only active in 10 or less other samples. This is around 8.5% of the non-brain samples (10 brain samples, 117 other samples).
 
 ### Select Enhancers
 
-Here DNase data is used. In theory this can be Promoter and Enhancer regions. because it is known that promoter are in front of a TSS we can simple exclude regions in front of genes. E.g. Here I use ensembl or Gencode transcripts and remove all regions that are in the range of 2kb in from of sthe TSS. The direction of the gene is considered here!
+Here Transcription data is used to separate betwenen enhancers and promoters. In theory a DNase region can be a Promoter or an Enhancer. Because it is known that promoters are in front of a TSS we exclude regions in front of genes. E.g. here I use ensembl or Gencode transcripts and remove all regions that are in the range of 2kb in from of the TSS. The direction of the gene is considered!
 
 ### Center of Peaks
 
-We are still left with regions of one sample and of different sizes. The site can range from 200 to several thousand bp. But we need only a small defined length (e.g. 171).
+We are still left with regions selected from one sample and these regions have different lengths. The region can range from 200 to several thousand bp. But we need only a small defined length (e.g. 171).
 
 So we have to define a new center. Therefore I use the imputed signals that overlaps the region and for every sample I selected the maximum as center. Then (for simplicity) the average position is chosen.
 
 ### Creating Probes
 
-Here we need a length of the probe (e.g. 171) which will be placed around the new computed center. We will get two output files. One a multi-fatsta file with the region and the DNA of that regions. Second a BED file with just the region of the probe in the genome. Final files are in the folder `results/RoadMap/positives|negatives/design/final/`.
+Here we need a length of the probe (e.g. 171) which will be placed around the new computed center. We will get two output files. One a multi-fasta file with the region and the DNA of that regions. Second, a BED file with just the region of the probe in the genome. Final files are in the folder `results/RoadMap/positives|negatives/design/final/`.
 
 ### Naming Convention of Files:
 
 1. Positive enhancers: `minSamples_120.overlap_0.95.gencode_27_minDistanceToTSS_2.0.probeLength.171.bed` means:
     1. `minSamples_120`: 120 of 127 samples have this region called
     2. `overlap_0.95`:`bedtools intersect` requires an overlap of 95%
-    3. `gencode_27_minDistanceToTSS_2.0`: Regions lies not within 2.0kb of a TSS and the transcription db gencode in version 27 is used.
+    3. `gencode_27_minDistanceToTSS_2.0`: Regions lie are not within 2.0kb in front of a TSS and the transcription db gencode in version 27 is used.
     4. `probeLength.171`: the length of the region and the extracted sequence is 171bp
 2. Negative enhancers: `Brain.minsamplesWithinGroup_8.maxOther_5.groupOverlap_0.95.ensembl_75_minDistanceToTSS_2.0.probeLength.171.bed` means:
     1. `Brain`: Tissue group is brain
     2. `minsamplesWithinGroup_8`: Minimumm of 8 from all 10 Brain samples should be active (80%)
     3. `maxOther_5`: Maximum of 5 other active samples are allowed. So around 4% (5 of 117).
     4. `overlap_0.95`:`bedtools intersect` requires an overlap of 95% (within and to other groups)
-    5. `ensembl_75_minDistanceToTSS_2.0`: Regions lies not within 2.0kb of a TSS and the transcription db Ensembl in version 75 is used.
-    6. `probeLength.171`: the length of the region and the extracted sequence is 171bp
+    5. `ensembl_75_minDistanceToTSS_2.0`: Regions lie are not within 2.0kb in front of a TSS and the transcription db Ensembl in version 75 is used.
+    6. `probeLength.171`: The length of the region and the extracted sequence is 171bp
 
 ### Files:
 
