@@ -81,63 +81,65 @@ Here we need a length of the probe (e.g. 171) which will be placed around the ne
 
 ### Files:
 
-1. Bed files (0 based, start inclusive, end exclusive)
-    1. Positive Enhancers columns: Contig, start, stop, number of active samples.
+#### Bed files (0 based, start inclusive, end exclusive)
+
+1. Positive Enhancers columns: Contig, start, stop, number of active samples.
+```
+chr1	121484654	121484825	114
+chr1	153959295	153959466	119
+chr1	156186345	156186516	121
+chr1	161582272	161582443	110
+chr1	223254706	223254877	119
+chr2	87623843	87624014	114
+chr2	92306027	92306198	120
+chr2	92319060	92319231	123
+chr2	92321512	92321683	118
+chr2	133016842	133017013	120
+chr3	125634806	125634977	115
   ```
-  chr1	121484654	121484825	114
-  chr1	153959295	153959466	119
-  chr1	156186345	156186516	121
-  chr1	161582272	161582443	110
-  chr1	223254706	223254877	119
-  chr2	87623843	87624014	114
-  chr2	92306027	92306198	120
-  chr2	92319060	92319231	123
-  chr2	92321512	92321683	118
-  chr2	133016842	133017013	120
-  chr3	125634806	125634977	115
-    ```
-    2. Negative Enhancers columns: Contig, start, stop, number of active samples within the group, Number of active samples outsite of the group.
+2. Negative Enhancers columns: Contig, start, stop, number of active samples within the group, Number of active samples outsite of the group.
+```
+chr1	32158975	32159146	8	3
+chr1	76747146	76747317	8	4
+chr1	76856259	76856430	8	1
+chr1	111299189	111299360	8	5
+chr1	117598077	117598248	8	4
+chr1	190547264	190547435	8	4
+chr1	203128185	203128356	8	2
+chr1	221017113	221017284	8	5
+chr2	50201277	50201448	8	3
+chr2	110457372	110457543	8	2
+chr2	188392116	188392287	8	5
+chr2	213159651	213159822	8	3
+chr3	32352787	32352958	8	4
+chr3	52060168	52060339	8	0
+chr3	120206219	120206390	8	3
+chr3	123241312	123241483	8	5
   ```
-  chr1	32158975	32159146	8	3
-  chr1	76747146	76747317	8	4
-  chr1	76856259	76856430	8	1
-  chr1	111299189	111299360	8	5
-  chr1	117598077	117598248	8	4
-  chr1	190547264	190547435	8	4
-  chr1	203128185	203128356	8	2
-  chr1	221017113	221017284	8	5
-  chr2	50201277	50201448	8	3
-  chr2	110457372	110457543	8	2
-  chr2	188392116	188392287	8	5
-  chr2	213159651	213159822	8	3
-  chr3	32352787	32352958	8	4
-  chr3	52060168	52060339	8	0
-  chr3	120206219	120206390	8	3
-  chr3	123241312	123241483	8	5
-    ```
-2. Fasta files:
-    1. Positive Enhancers
-        1. Header:
-          - contig:start-stop (1 based, both inclusive)
-          - active_count:114 (number of active samples)
-        2. Sequence
-          ```
-          >chr2:87623844-87624014 active_count:114
-          tagccagccaggcccgccagccagccagccagcgagccaagccagccaagccagccagcctgccaagccagccggccagccaagctagccaatccactcagccactcaagccagccaagtcacccggccatccaagccagccaagccagtcagccagcccagacagccaag
-          >chr2:92306028-92306198 active_count:120
-          ctctttttgtggaatctgcaagtgcatatttagctagatttgacgatttcgttggaaacgggattacatataaaaagcagacagcagcattctcagaaactcctttgtgatgtttgcattcaagtcacagagttgaacattccctttcatagagcaggattgaaaaactct
-          ```
-    1. Negative Enhancers
-        1. Header:
-          - contig:start-stop (1 based, both inclusive)
-          - active_count:9_2 (number of active samples within group; number of active samples outsite group)
-        2. Sequence
-      ```
-      >chr1:4768993-4769163 active_count:9_2
-      ACTTGAAGAGGAAAAACAAATCGACCTCTCCCTGCCACTGTTGCAATTGGTTGGTTTTTCTGCATAACAGCTGGGTGTCTTAGAAATGAGGGGGTTTCTATAGTAACCAATTACAGCCATGATTGGTGAAAAATCACAGAAATATCCTGTGTGTGAAGTTATGCCAGCGAG
-      >chr1:32158976-32159146 active_count:8_3
-      ATTTGGCAAATCTACAGTCTCAAGCAGGGGGGTATCCCATCCCCCACACCCGTACCCAAGCACATCAGCTCACACACAGCACAGCCGGAGGCATATGGACACACACATgcacggtggcagaaacccatgctggctgagtgtcaggctgcctgacttcaaatcctgtacttg
-      ```
+
+#### Fasta files:
+1. Positive Enhancers
+    1. Header:
+      - contig:start-stop (1 based, both inclusive)
+      - active_count:114 (number of active samples)
+    2. Sequence
+```
+>chr2:87623844-87624014 active_count:114
+tagccagccaggcccgccagccagccagccagcgagccaagccagccaagccagccagcctgccaagccagccggccagccaagctagccaatccactcagccactcaagccagccaagtcacccggccatccaagccagccaagccagtcagccagcccagacagccaag
+>chr2:92306028-92306198 active_count:120
+ctctttttgtggaatctgcaagtgcatatttagctagatttgacgatttcgttggaaacgggattacatataaaaagcagacagcagcattctcagaaactcctttgtgatgtttgcattcaagtcacagagttgaacattccctttcatagagcaggattgaaaaactct
+```
+1. Negative Enhancers
+    1. Header:
+      - contig:start-stop (1 based, both inclusive)
+      - active_count:9_2 (number of active samples within group; number of active samples outsite group)
+    2. Sequence
+```
+>chr1:4768993-4769163 active_count:9_2
+ACTTGAAGAGGAAAAACAAATCGACCTCTCCCTGCCACTGTTGCAATTGGTTGGTTTTTCTGCATAACAGCTGGGTGTCTTAGAAATGAGGGGGTTTCTATAGTAACCAATTACAGCCATGATTGGTGAAAAATCACAGAAATATCCTGTGTGTGAAGTTATGCCAGCGAG
+>chr1:32158976-32159146 active_count:8_3
+ATTTGGCAAATCTACAGTCTCAAGCAGGGGGGTATCCCATCCCCCACACCCGTACCCAAGCACATCAGCTCACACACAGCACAGCCGGAGGCATATGGACACACACATgcacggtggcagaaacccatgctggctgagtgtcaggctgcctgacttcaaatcctgtacttg
+```
 
 ## Requirements
 
