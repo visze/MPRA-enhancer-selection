@@ -47,8 +47,8 @@ Here we will select regions of open DNase accessibility that are only active in 
 2. Then we run the "counting" on that group. This is again done with `bedtools intersect` (see 1.A Positive enhancers). One random sample of the group will be selected as `-a` input. All samples of the same group (including `-a`) used as `-b` input.
 3. Now we do the same analysis but we will change the `-b` samples to all samples that are not in the selected group (e.g. are not brain).
 4. Filtering the data.
-  1. First we have a threshold for the minimum number of active regions within the group. E.g. if we select as group `Brain` and set the threshold to `8`the 80% of all Brain samples should have this region actives.
-  2. Because we want to have that region exclusive active in the tissue group we filter on teh second analysis with a maximum threshold. E.g. a threshold of 10 for the Brain group means that teh active region Brain region is only active in 10 or less other samples. This is only around 8.5% (10 brain samples, 117 other samples).
+    1. First we have a threshold for the minimum number of active regions within the group. E.g. if we select as group `Brain` and set the threshold to `8`the 80% of all Brain samples should have this region actives.
+    2. Because we want to have that region exclusive active in the tissue group we filter on teh second analysis with a maximum threshold. E.g. a threshold of 10 for the Brain group means that teh active region Brain region is only active in 10 or less other samples. This is only around 8.5% (10 brain samples, 117 other samples).
 
 ### Select Enhancers
 
@@ -67,22 +67,22 @@ Here we need a length of the probe (e.g. 171) which will be placed around the ne
 ### Naming Convention of Files:
 
 1. Positive enhancers: `minSamples_120.overlap_0.95.gencode_27_minDistanceToTSS_2.0.probeLength.171.bed` means:
-  1. `minSamples_120`: 120 of 127 samples have this region called
-  2. `overlap_0.95`:`bedtools intersect` requires an overlap of 95%
-  3. `gencode_27_minDistanceToTSS_2.0`: Regions lies not within 2.0kb of a TSS and the transcription db gencode in version 27 is used.
-  4. `probeLength.171`: the length of the region and the extracted sequence is 171bp
+    1. `minSamples_120`: 120 of 127 samples have this region called
+    2. `overlap_0.95`:`bedtools intersect` requires an overlap of 95%
+    3. `gencode_27_minDistanceToTSS_2.0`: Regions lies not within 2.0kb of a TSS and the transcription db gencode in version 27 is used.
+    4. `probeLength.171`: the length of the region and the extracted sequence is 171bp
 2. Negative enhancers: `Brain.minsamplesWithinGroup_8.maxOther_5.groupOverlap_0.95.ensembl_75_minDistanceToTSS_2.0.probeLength.171.bed` means:
-  1. `Brain`: Tissue group is brain
-  2. `minsamplesWithinGroup_8`: Minimumm of 8 from all 10 Brain samples should be active (80%)
-  3. `maxOther_5`: Maximum of 5 other active samples are allowed. So around 4% (5 of 117).
-  4. `overlap_0.95`:`bedtools intersect` requires an overlap of 95% (within and to other groups)
-  5. `ensembl_75_minDistanceToTSS_2.0`: Regions lies not within 2.0kb of a TSS and the transcription db Ensembl in version 75 is used.
-  6. `probeLength.171`: the length of the region and the extracted sequence is 171bp
+    1. `Brain`: Tissue group is brain
+    2. `minsamplesWithinGroup_8`: Minimumm of 8 from all 10 Brain samples should be active (80%)
+    3. `maxOther_5`: Maximum of 5 other active samples are allowed. So around 4% (5 of 117).
+    4. `overlap_0.95`:`bedtools intersect` requires an overlap of 95% (within and to other groups)
+    5. `ensembl_75_minDistanceToTSS_2.0`: Regions lies not within 2.0kb of a TSS and the transcription db Ensembl in version 75 is used.
+    6. `probeLength.171`: the length of the region and the extracted sequence is 171bp
 
 ### Files:
 
 1. Bed files (0 based, start inclusive, end exclusive)
-  1. Positive Enhancers columns: Contig, start, stop, number of active samples.
+    1. Positive Enhancers columns: Contig, start, stop, number of active samples.
   ```
   chr1	121484654	121484825	114
   chr1	153959295	153959466	119
@@ -96,7 +96,7 @@ Here we need a length of the probe (e.g. 171) which will be placed around the ne
   chr2	133016842	133017013	120
   chr3	125634806	125634977	115
     ```
-  2. Negative Enhancers columns: Contig, start, stop, number of active samples within the group, Number of active samples outsite of the group.
+    2. Negative Enhancers columns: Contig, start, stop, number of active samples within the group, Number of active samples outsite of the group.
   ```
   chr1	32158975	32159146	8	3
   chr1	76747146	76747317	8	4
@@ -116,22 +116,22 @@ Here we need a length of the probe (e.g. 171) which will be placed around the ne
   chr3	123241312	123241483	8	5
     ```
 2. Fasta files:
-  1. Positive Enhancers
-    1. Header:
-      - contig:start-stop (1 based, both inclusive)
-      - active_count:114 (number of active samples)
-    2. Sequence
-      ```
-      >chr2:87623844-87624014 active_count:114
-      tagccagccaggcccgccagccagccagccagcgagccaagccagccaagccagccagcctgccaagccagccggccagccaagctagccaatccactcagccactcaagccagccaagtcacccggccatccaagccagccaagccagtcagccagcccagacagccaag
-      >chr2:92306028-92306198 active_count:120
-      ctctttttgtggaatctgcaagtgcatatttagctagatttgacgatttcgttggaaacgggattacatataaaaagcagacagcagcattctcagaaactcctttgtgatgtttgcattcaagtcacagagttgaacattccctttcatagagcaggattgaaaaactct
-      ```
-  1. Negative Enhancers
-    1. Header:
-      - contig:start-stop (1 based, both inclusive)
-      - active_count:9_2 (number of active samples within group; number of active samples outsite group)
-    2. Sequence
+    1. Positive Enhancers
+        1. Header:
+          - contig:start-stop (1 based, both inclusive)
+          - active_count:114 (number of active samples)
+        2. Sequence
+          ```
+          >chr2:87623844-87624014 active_count:114
+          tagccagccaggcccgccagccagccagccagcgagccaagccagccaagccagccagcctgccaagccagccggccagccaagctagccaatccactcagccactcaagccagccaagtcacccggccatccaagccagccaagccagtcagccagcccagacagccaag
+          >chr2:92306028-92306198 active_count:120
+          ctctttttgtggaatctgcaagtgcatatttagctagatttgacgatttcgttggaaacgggattacatataaaaagcagacagcagcattctcagaaactcctttgtgatgtttgcattcaagtcacagagttgaacattccctttcatagagcaggattgaaaaactct
+          ```
+    1. Negative Enhancers
+        1. Header:
+          - contig:start-stop (1 based, both inclusive)
+          - active_count:9_2 (number of active samples within group; number of active samples outsite group)
+        2. Sequence
       ```
       >chr1:4768993-4769163 active_count:9_2
       ACTTGAAGAGGAAAAACAAATCGACCTCTCCCTGCCACTGTTGCAATTGGTTGGTTTTTCTGCATAACAGCTGGGTGTCTTAGAAATGAGGGGGTTTCTATAGTAACCAATTACAGCCATGATTGGTGAAAAATCACAGAAATATCCTGTGTGTGAAGTTATGCCAGCGAG
