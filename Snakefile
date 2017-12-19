@@ -260,4 +260,4 @@ rule extractProbe:
                         sequence = reference[chr][start:end+1].seq
 
                         fout.write(">%s:%d-%d active_count:%s\n%s\n" % (chr, start, end, "_".join(counts), sequence))
-                        foutBed.write("%s\t%d\t%d\t%s" % (chr, start-1,end, "\t".join(counts)))
+                        foutBed.write("%s\t%d\t%d\t%s\n" % (chr, start-1,end, "\t".join(counts)))

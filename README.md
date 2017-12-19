@@ -6,16 +6,37 @@ This folder contains a pipeline to select positive and negative enhancer regions
 
 An "enhancer" is defined as an open DNase accessibility which is active in several samples and is not located in front of a transcription start site.
 
+Some stats about the samples in the peigenetic rodmap:
+
+- Number of samples: 127
+- Number of Tissue Groups: 19
+- Largest Tissue Groups:
+  - ENCODE2012: 16 (samples from encode. This is a mixture of tissues)
+  - Blood & T-cell: 14
+  - Digestive: 12
+  - Other: 11  
+  - Brain: 10
+
 
 ## Pipeline description
 
-The following data is generated:
+The first part of the probe generation is split up in "positive" and "negative" groups. But in general there are steps:
 
-### Positive enhancers
+1. Find common narrow peaks and filter them
+2. Remove regions that are close to a  transcription start site (promoter removal)
+3. Get the center of the peaks by maximum signals
+4. Create probes using the new center and the probe length
+
+The first part is slightly different between the positive enhancers (active in lot's of samples) and negative enhancers (active only in a tissue group)
+
+### 1.a Positive enhancers
 
 Here we will select regions that are always active over all samples. On a MPRA experiment this region should be "activate".
 
-### Negative enhancers
+1. Running `bedtools intersect` with parameters `-c` `-r` and `-f`. One random sample will be selected as `-a` input. All samples (including `-a`) used as `-b` input. `bedtools` will count the overlaps of the all samples(`b`) with the regions in `a`. `-f` is the minimum fraction of the overlap (e.g. 1.0, 0.9,..). because of `-r` the overlaps must hold for both direction. Region in `a` in regions in `b` and vice versa.
+2. Filtering the data using a threshold for the minimum number of samples that have the regions. In total there are 127 samples. So with a threshold of 110 the DNase narrow peak is present in 85% of all samples.
+
+### 1.b Negative enhancers
 
 Here we will select regions of open DNase accessibility that are only active in one tissue (e.g. blood) but not in any  other tissue. On a MPRA experiment with a different tissue this region should be deactivated
 
