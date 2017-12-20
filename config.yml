@@ -16,9 +16,9 @@ params:
     # -c parameter for bedtools to define the min. overlap ov two regions (1.0 is 100% A in B and B in A => A == B)
     overlap: [1.0, 0.95, 0.9]
     # From the overlap the number of samples that have that regions are count. Here we set a thershold for a min. number of samples to use the
-    minsamplesWithinGroup: [14,10,8]
+    minsamplesWithinGroup: [14,12,10,9,8]
     # From the overlap the number of samples that have that regions are count. Here we set a thershold for a min. number of samples to use the
-    maxsamplesToOther: [0,5,10]
+    maxsamplesToOther: [0,3,5,10]
   ##
   transcript_DBs: ['ensembl_75','gencode_27']
   # minimum distance to TSS (in kb)
